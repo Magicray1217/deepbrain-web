@@ -1,13 +1,10 @@
 import Link from 'next/link';
-import { fetchPages } from '@/lib/api';
+import { getPages } from '@/lib/data';
 import { typeLabel, typeColor } from '@/lib/utils';
 
-export const dynamic = 'force-dynamic';
-
-export default async function ExplorePage() {
-  const pages = await fetchPages();
-
-  const byType: Record<string, any[]> = {};
+export default function ExplorePage() {
+  const pages = getPages();
+  const byType: Record<string, typeof pages> = {};
   for (const p of pages) {
     (byType[p.type] = byType[p.type] || []).push(p);
   }
@@ -25,7 +22,7 @@ export default async function ExplorePage() {
             <span className="text-gray-400 text-sm">{items.length} 篇</span>
           </h3>
           <div className="space-y-1">
-            {items.map((p: any) => (
+            {items.map(p => (
               <div key={p.slug}>
                 <Link href={`/page/${encodeURIComponent(p.slug)}`}
                   className="text-sm text-gray-700 hover:text-blue-600">{p.title}</Link>

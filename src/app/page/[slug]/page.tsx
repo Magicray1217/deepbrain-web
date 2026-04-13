@@ -1,21 +1,13 @@
 import Link from 'next/link';
-import { fetchPage } from '@/lib/api';
+import { getPage } from '@/lib/data';
 import { typeLabel, typeColor, formatDate, markdownToHtml } from '@/lib/utils';
-
-export const dynamic = 'force-dynamic';
+import { notFound } from 'next/navigation';
 
 export default async function PageDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const page = await fetchPage(decodeURIComponent(slug));
+  const page = getPage(decodeURIComponent(slug));
 
-  if (!page) {
-    return (
-      <main className="max-w-6xl mx-auto px-6 py-20 text-center">
-        <div className="text-5xl mb-4">🔍</div>
-        <p className="text-gray-400">页面不存在</p>
-      </main>
-    );
-  }
+  if (!page) notFound();
 
   const bodyHtml = markdownToHtml(page.compiled_truth || '');
   const allRelated = [...(page.links || []), ...(page.backlinks || [])];

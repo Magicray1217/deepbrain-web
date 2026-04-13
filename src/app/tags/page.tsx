@@ -1,10 +1,8 @@
 import Link from 'next/link';
-import { fetchTags } from '@/lib/api';
+import { getTags } from '@/lib/data';
 
-export const dynamic = 'force-dynamic';
-
-export default async function TagsPage() {
-  const tags = await fetchTags();
+export default function TagsPage() {
+  const tags = getTags();
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-6">

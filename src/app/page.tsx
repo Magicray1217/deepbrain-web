@@ -1,13 +1,12 @@
 import Link from 'next/link';
-import { fetchPages, fetchStats, fetchTags } from '@/lib/api';
+import { getPages, getStats, getTags } from '@/lib/data';
 import { PageCard } from '@/components/PageCard';
 
-export const dynamic = 'force-dynamic';
-
-export default async function Home() {
-  const [pages, stats, tags] = await Promise.all([fetchPages(), fetchStats(), fetchTags()]);
+export default function Home() {
+  const pages = getPages();
+  const stats = getStats();
+  const topTags = getTags().slice(0, 20);
   const feed = pages.slice(0, 20);
-  const topTags = tags.slice(0, 20);
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-6 flex gap-6">
@@ -15,7 +14,7 @@ export default async function Home() {
         <div className="mb-6">
           <h2 className="text-sm font-medium text-gray-400 uppercase tracking-wide">最新知识</h2>
         </div>
-        {feed.map((p: any) => (
+        {feed.map((p) => (
           <PageCard key={p.slug} page={p} tags={p.tags} />
         ))}
         {pages.length > 20 && (
@@ -40,7 +39,7 @@ export default async function Home() {
         <div className="bg-white rounded-lg p-5 border border-gray-50">
           <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">🏷️ 热门标签</h3>
           <div className="flex flex-wrap gap-1.5">
-            {topTags.map((t: any) => (
+            {topTags.map((t) => (
               <Link key={t.tag} href={`/tag/${encodeURIComponent(t.tag)}`}
                 className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors">
                 {t.tag} <span className="text-gray-400">{t.count}</span>
